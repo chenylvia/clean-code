@@ -1,0 +1,54 @@
+{
+  "skill_name": "clean-code",
+  "evals": [
+    {
+      "id": 0,
+      "name": "review-legacy-code",
+      "prompt": "帮我看看 _scan_test/legacy_report.py 这个文件。这是我从上一个项目接手的老代码，下个月要在这上面加功能，我有点担心。给我说说有哪些问题、哪些必须先处理。",
+      "expected_output": "一份分级、带位置、带最小改法的代码审查报告；重点指出静默吞掉异常、参数过多、深层嵌套、重复代码、注释掉的代码",
+      "files": ["_scan_test/legacy_report.py"],
+      "assertions": [
+        "指出 except/pass（静默吞掉异常）问题",
+        "指出 process_order 参数过多（6 个参数）",
+        "指出 process_order 的多层嵌套 if / 过深缩进",
+        "把问题按严重度或处理优先级排序",
+        "每条问题都给出了具体位置（文件行号或函数名）",
+        "给出了可落地的最小改法，而不是只说'需要重构'",
+        "未修改 _scan_test/legacy_report.py 原始文件"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "refactor-legacy",
+      "prompt": "我要给 _scan_test/legacy_report.py 里的 process_order 加一条折扣规则，但这个函数我现在完全不敢动。帮我把它、以及同文件里的 calc 和 another 整理一下，让以后改起来安全一些。",
+      "expected_output": "先建安全网（特征测试）、小步重构，产出重构后代码与测试，消除 calc/another 重复，说明如何插入折扣规则以及行为是否改变",
+      "files": ["_scan_test/legacy_report.py"],
+      "assertions": [
+        "产出了重构后的代码文件",
+        "产出了测试文件作为安全网（不只是重构代码）",
+        "消除了 calc 与 another 之间的重复逻辑",
+        "说明了如何/在哪里插入折扣规则（扩展点）",
+        "明确说明重构是否改变了原有行为",
+        "没有引入用户未请求的行为变更，或对每一处行为变更单独声明并给出理由",
+        "未修改 _scan_test/legacy_report.py 原始文件"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "write-new-module",
+      "prompt": "帮我写一个小模块 monthly_report.py：输入是一个订单列表（每个订单含 id / date / amount / currency / tax_included 字段），按月份汇总金额并输出 CSV。实际数据可能来自脏 CSV，字段可能缺失或格式不对，出错时要说清楚是哪一行。同时给我测试。",
+      "expected_output": "一个职责清晰、命名达意、错误信息带行号、带测试的 monthly_report.py；不过度设计",
+      "files": [],
+      "assertions": [
+        "产出了 monthly_report.py",
+        "产出了测试文件",
+        "测试可以实际运行并通过",
+        "脏数据/字段缺失的错误信息包含行号或可定位信息",
+        "函数与变量命名表达意图（没有 data/temp/x/process 之类含糊命名）",
+        "金额处理明确（Decimal 或说明浮点误差策略）",
+        "对扫描器/工具给出的告警做了人工复核，而不是照单全收",
+        "没有明显过度设计（模块规模与任务相称，未堆砌无意义抽象）"
+      ]
+    }
+  ]
+}
